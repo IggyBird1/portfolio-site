@@ -7,8 +7,9 @@ WORKDIR /app
 # Install dependencies
 FROM base AS dependencies
 COPY package.json ./
-COPY package-lock.json ./
-RUN npm install --frozen-lockfile
+# We are no longer explicitly copying package-lock.json here.
+# npm install will generate it if it's missing.
+RUN npm install
 
 # Build the Next.js application
 FROM base AS builder
@@ -23,14 +24,19 @@ WORKDIR /app
 # Set environment variables for Next.js production
 ENV NODE_ENV production
 
-# Copy necessary files from the builder stage
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+# Don't run production as root
+# Create a non-root user for security best practices
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+USER nextjs
 
-# Expose the port Next.js runs on
-EXPOSE 3000
+# Copy necessary files from the builder stage
+# Automatically leverage output traces to reduce image size (Next.js standalone output)
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 # Command to run the application
-CMD ["npm", "start"]
+# Next.js standalone output creates a server.js in the .next/standalone directory
+CMD ["node", "server.js"]
