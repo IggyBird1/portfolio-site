@@ -1,0 +1,42 @@
+<!-- 
+WordPress/BeTheme Contact Form HTML Template
+Add this to your page template or use in a custom BeTheme element
+-->
+
+<div class="portfolio-contact-form">
+    <h3>Send Me a Message</h3>
+    
+    <form id="portfolio-contact-form" method="post">
+        <div class="form-group">
+            <label for="contact-name">Name *</label>
+            <input type="text" id="contact-name" name="name" required placeholder="Your name">
+        </div>
+        
+        <div class="form-group">
+            <label for="contact-email">Email *</label>
+            <input type="email" id="contact-email" name="email" required placeholder="your.email@example.com">
+        </div>
+        
+        <div class="form-group">
+            <label for="contact-subject">Subject *</label>
+            <input type="text" id="contact-subject" name="subject" required placeholder="How can I help you?">
+        </div>
+        
+        <div class="form-group">
+            <label for="contact-message">Message *</label>
+            <textarea id="contact-message" name="message" required placeholder="Your message..."></textarea>
+        </div>
+        
+        <button type="submit" class="submit-btn">
+            Send Message
+        </button>
+    </form>
+</div>
+
+<script>
+// Localize script for WordPress AJAX
+var portfolioAjax = {
+    ajaxurl: '<?php echo admin_url('admin-ajax.php'); ?>',
+    nonce: '<?php echo wp_create_nonce('contact_form_nonce'); ?>'
+};
+</script>
