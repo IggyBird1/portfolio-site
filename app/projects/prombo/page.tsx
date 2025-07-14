@@ -361,4 +361,77 @@ export default function PromboPage() {
           <div className="bg-gray-900 rounded-lg overflow-hidden">
             <div className="flex justify-center p-4">
               <ImageLightbox
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/6A56828B-75AB-4DF3-A082-ABC8E9C57381-e1742913261321-ihumlho3FbGQxzgFD\
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/6A56828B-75AB-4DF3-A082-ABC8E9C57381-e1742913261321-ihumlho3FbGQxzgFD9ujuLipzT33eT.png"
+                alt="After Effects Timeline - Animation Controls"
+                width={1400}
+                height={800}
+                className="max-w-full h-auto object-contain"
+                style={{ maxHeight: "600px" }}
+              />
+            </div>
+            <p className="text-gray-400 text-sm p-4 text-center">
+              Detailed view of animation controls including cogwheel mechanics and limb systems
+            </p>
+          </div>
+
+          <div className="bg-gray-900 rounded-lg overflow-hidden">
+            <div className="flex justify-center p-4">
+              <ImageLightbox
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/53CCB0B5-F8B2-4F47-852C-FA817377DBD1-mjiJrjlwXd1JCX4g4pbJwFoZ6mA6XQ.png"
+                alt="After Effects Composition Window"
+                width={1400}
+                height={800}
+                className="max-w-full h-auto object-contain"
+              />
+            </div>
+            <p className="text-gray-400 text-sm p-4 text-center">
+              Composition window showing the rigged character with visible control points and animation setup
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mb-16">
+        <h2 className="text-3xl font-bold mb-8">Software & Tools Used</h2>
+        <div className="grid md:grid-cols-2 gap-8">
+          <div>
+            <h3 className="text-xl font-bold mb-4">Design Software</h3>
+            <ul className="space-y-2 text-gray-300">
+              <li>• Adobe Illustrator - Vector design and character creation</li>
+              <li>• Adobe After Effects - Animation and rigging</li>
+              <li>• Clip Studio Paint - Initial sketching and concept development</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-xl font-bold mb-4">Animation Tools</h3>
+            <ul className="space-y-2">
+              <li>
+                <span className="text-cyan-400">
+                  Specialized After Effects add-ons for character rigging and animation
+                </span>
+              </li>
+              <li>
+                <span className="text-cyan-400">Custom rigging setup for industrial character movement</span>
+              </li>
+              <li>
+                <span className="text-cyan-400">Component-based animation system</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="mb-16">
+        <h2 className="text-3xl font-bold mb-8">Project Outcome</h2>
+        <div className="bg-gradient-to-r from-gray-900/50 to-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50">
+          <p className="text-gray-300 text-lg leading-relaxed">
+            Prombo successfully serves as an engaging mascot character that bridges the gap between industrial
+            functionality and user-friendly design. The character's clean, modern aesthetic and expressive animations
+            make complex manufacturing processes more approachable and understandable for users, while maintaining the
+            professional credibility required in industrial settings.
+          </p>
+        </div>
+      </section>
+    </div>
+  )
+}
