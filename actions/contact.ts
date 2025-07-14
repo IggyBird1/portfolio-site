@@ -2,8 +2,6 @@
 
 import { Resend } from "resend"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 interface ContactFormData {
   name: string
   email: string
@@ -12,6 +10,18 @@ interface ContactFormData {
 }
 
 export async function submitContactForm(data: ContactFormData) {
+  // Ensure the API key is available before proceeding
+  const resendApiKey = process.env.RESEND_API_KEY
+  if (!resendApiKey) {
+    console.error("RESEND_API_KEY is not set in environment variables. Cannot send emails.")
+    return {
+      success: false,
+      message: "Server configuration error: Email service not available. Please try again later.",
+    }
+  }
+
+  const resend = new Resend(resendApiKey)
+
   try {
     // Validate the data server-side
     if (!data.name || !data.email || !data.subject || !data.message) {
