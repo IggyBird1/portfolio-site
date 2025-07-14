@@ -37,6 +37,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
+# Expose the port Next.js runs on
+EXPOSE 3000
+
 # Command to run the application
 # Next.js standalone output creates a server.js in the .next/standalone directory
 CMD ["node", "server.js"]
