@@ -133,7 +133,7 @@ export default function Home() {
             >
               <Star className="h-6 w-6 text-purple-400 fill-purple-400" />
             </motion.div>
-            <h2 className="text-xl md:text-2xl bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent font-light">
+            <h2 className="text-xl md:text-2xl bg-gradient-to-r from-green-400 to-green-300 bg-clip-text text-transparent font-light">
               Animator & Video Editor
             </h2>
             <motion.div
@@ -255,25 +255,7 @@ export default function Home() {
           </motion.h2>
 
           <div className="max-w-6xl mx-auto">
-            {/* Download Resume Button */}
-            <motion.div
-              className="text-center mb-12"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <Button
-                asChild
-                size="lg"
-                className="bg-gradient-to-r from-green-600 to-cyan-600 hover:from-green-700 hover:to-cyan-700 text-white border-0 shadow-lg hover:shadow-green-500/25 transition-all duration-300 px-8 py-3 rounded-full"
-              >
-                <a href="/resume.pdf" download>
-                  <Download className="mr-2 h-5 w-5" />
-                  Download Resume
-                </a>
-              </Button>
-            </motion.div>
+
 
             <div className="grid md:grid-cols-2 gap-12">
               {/* Left Column - Experience & Education */}
@@ -640,13 +622,14 @@ export default function Home() {
             </span>
           </motion.h2>
 
-          <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             {/* Contact Info */}
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
+              className="text-left"
             >
               <h3 className="text-3xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                 Get In Touch
@@ -661,14 +644,6 @@ export default function Home() {
                   <div>
                     <h4 className="font-bold mb-1 text-white">Email</h4>
                     <p className="text-gray-300">igalv95@gmail.com</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <Phone className="h-6 w-6 text-purple-400 mr-4 mt-1" />
-                  <div>
-                    <h4 className="font-bold mb-1 text-white">Phone</h4>
-                    <p className="text-gray-300">+972-542046762</p>
                   </div>
                 </div>
 
@@ -727,19 +702,6 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Contact Form */}
-            <motion.div
-              className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/50"
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="text-2xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                Send Me a Message
-              </h3>
-              <ContactForm />
-            </motion.div>
           </div>
         </div>
       </section>

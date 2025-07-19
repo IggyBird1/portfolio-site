@@ -1,10 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
-import { Button } from "@/components/ui/button"
 
 interface ImageLightboxProps {
   src: string
@@ -26,16 +24,73 @@ export default function ImageLightbox({
   objectFit = "contain",
 }: ImageLightboxProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [zoom, setZoom] = useState(1)
+  const [panX, setPanX] = useState(0)
+  const [panY, setPanY] = useState(0)
 
-  const openLightbox = () => setIsOpen(true)
-  const closeLightbox = () => setIsOpen(false)
+  const openLightbox = () => {
+    console.log("Opening lightbox") // Debug log
+    setIsOpen(true)
+    setZoom(1) // Reset zoom when opening
+    setPanX(0) // Reset pan when opening
+    setPanY(0)
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeLightbox = () => {
+    console.log("Closing lightbox") // Debug log
+    setIsOpen(false)
+    setZoom(1) // Reset zoom when closing
+    setPanX(0) // Reset pan when closing
+    setPanY(0)
+    document.body.style.overflow = 'unset'
+  }
+
+  // Handle escape key and zoom
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        closeLightbox()
+      }
+    }
+
+    const handleWheel = (e: WheelEvent) => {
+      if (!isOpen) return
+      
+      e.preventDefault()
+      
+      const zoomFactor = 0.1
+      const delta = e.deltaY > 0 ? -zoomFactor : zoomFactor
+      
+      setZoom(prevZoom => {
+        const newZoom = prevZoom + delta
+        // Clamp zoom between 0.5 (50%) and 2.5 (250%)
+        return Math.min(Math.max(newZoom, 0.5), 2.5)
+      })
+    }
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape)
+      document.addEventListener('wheel', handleWheel, { passive: false })
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+      document.removeEventListener('wheel', handleWheel)
+    }
+  }, [isOpen])
 
   return (
     <>
       {/* Clickable Image */}
       <div
-        className={`cursor-pointer transition-all duration-300 hover:opacity-80 ${className}`}
-        onClick={openLightbox}
+        className={`cursor-pointer transition-all duration-300 hover:opacity-80 hover:scale-105 ${className}`}
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          openLightbox()
+        }}
+
       >
         {fill ? (
           <Image src={src || "/placeholder.svg"} alt={alt} fill className={`object-${objectFit}`} />
@@ -50,52 +105,78 @@ export default function ImageLightbox({
         )}
       </div>
 
-      {/* Lightbox Modal */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
-            onClick={closeLightbox}
+      {/* Simple Lightbox Modal */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center"
+          style={{ zIndex: 99999 }}
+        >
+          {/* Close Button */}
+          <button
+            className="absolute top-20 right-6 p-3 bg-black bg-opacity-70 hover:bg-opacity-90 text-white rounded-full transition-all border-2 border-white border-opacity-30"
+            onClick={(e) => {
+              e.stopPropagation()
+              closeLightbox()
+            }}
+            style={{ zIndex: 100001 }}
           >
-            {/* Close Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full"
-              onClick={closeLightbox}
-            >
-              <X className="h-6 w-6" />
-            </Button>
+            <X className="h-6 w-6" />
+          </button>
 
-            {/* Image Container */}
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 30 }}
-              className="relative max-w-[90vw] max-h-[90vh] w-full h-full flex items-center justify-center"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Image src={src || "/placeholder.svg"} alt={alt} fill className="object-contain" sizes="90vw" priority />
-            </motion.div>
+          {/* Background - click to close */}
+          <div 
+            className="absolute inset-0"
+            onClick={closeLightbox}
+          />
 
-            {/* Image Info */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.3, delay: 0.1 }}
-              className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-center"
-            >
-              <p className="text-sm">{alt}</p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {/* Image Container with Zoom */}
+          <div 
+            className="relative max-w-[95vw] max-h-[95vh] p-4 overflow-hidden cursor-grab active:cursor-grabbing"
+            onMouseDown={(e) => {
+              if (zoom <= 1) return // Only allow panning when zoomed in
+              
+              const startX = e.clientX - panX
+              const startY = e.clientY - panY
+              
+              const handleMouseMove = (e: MouseEvent) => {
+                setPanX(e.clientX - startX)
+                setPanY(e.clientY - startY)
+              }
+              
+              const handleMouseUp = () => {
+                document.removeEventListener('mousemove', handleMouseMove)
+                document.removeEventListener('mouseup', handleMouseUp)
+              }
+              
+              document.addEventListener('mousemove', handleMouseMove)
+              document.addEventListener('mouseup', handleMouseUp)
+            }}
+          >
+            <img 
+              src={src || "/placeholder.svg"} 
+              alt={alt}
+              className="max-w-full max-h-full object-contain transition-transform duration-200"
+              style={{ 
+                maxWidth: '95vw', 
+                maxHeight: '95vh',
+                transform: `scale(${zoom}) translate(${panX / zoom}px, ${panY / zoom}px)`,
+                transformOrigin: 'center center'
+              }}
+              draggable={false}
+            />
+          </div>
+
+          {/* Zoom Indicator */}
+          <div className="absolute top-20 left-6 bg-black bg-opacity-70 rounded-lg px-3 py-2 text-white text-sm">
+            <p>{Math.round(zoom * 100)}%</p>
+          </div>
+
+          {/* Image Info */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 rounded-lg px-4 py-2 text-white">
+            <p className="text-sm">{alt}</p>
+          </div>
+        </div>
+      )}
     </>
   )
 }
